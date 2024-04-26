@@ -1,0 +1,72 @@
+name: Deploy for different environments
+
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        description: 'Environment to deploy to'
+        required: true
+        type: environment
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_SECRET: ${{ secrets.DEPLOY_SECRET }}        
+    if: ${{ github.event.inputs.env == 'dev' || github.event.inputs.env == 'test' || github.event.inputs.env == 'qa' || github.event.inputs.env == 'prod' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Deploy
+        run: |
+          echo "Executing Deploy..."
+          echo "Deployed with secret: $DEPLOY_SECRET"
+          echo "REGION_ID: ${{ env.REGION_ID }}"
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.env == 'test' || github.event.inputs.env == 'qa' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Run tests
+        run: |
+          echo "Executing tests..."
+
+  perf-test:
+    name: Performance Test
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.env == 'qa' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Run performance tests
+        run: |
+          echo "Executing performance tests..."
+
+  api-test:
+    name: API Test
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.env == 'qa' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Run API tests
+        run: |
+          echo "Executing API tests..."
+
+  post-checks:
+    name: Post-Checks
+    runs-on: ubuntu-latest   
+    env:
+      DEPLOY_SECRET: ${{ secrets.DEPLOY_SECRET }}     
+    if: ${{ github.event.inputs.env == 'prod' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Run post-checks
+        run: |
+          echo "Executing post-checks..."
+          echo "Deployed with secret: $DEPLOY_SECRET"

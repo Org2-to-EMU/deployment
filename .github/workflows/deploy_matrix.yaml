@@ -1,0 +1,37 @@
+name: Deploy with matrix for different environments
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        type: environment
+        description: 'Environment to deploy to'
+        required: true
+jobs:
+  get-tasks:
+    name: set tasks (${{ github.event.inputs.env }})
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.env }}
+    outputs:
+      tasks: ${{ steps.set-tasks.outputs.tasks }}
+    env:
+      TASKS: ${{ vars.TASKS }}
+    steps:
+      - uses: actions/github-script@v7
+        id: set-tasks
+        with:
+          result-encoding: string
+          retries: 3
+          script: |
+            const tasks = process.env.TASKS;
+            core.setOutput('tasks', JSON.stringify(tasks.split(',')))
+  tasks:
+    name: ${{ matrix.task }}
+    needs: [get-tasks]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        task: ${{ fromJson(needs.get-tasks.outputs.tasks) }}  
+      max-parallel: 1
+    steps:
+      - name: Use matrix
+        run: echo "Execute ${{ matrix.task }}"
