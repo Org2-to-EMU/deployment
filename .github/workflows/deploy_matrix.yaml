@@ -3,13 +3,14 @@ on:
   workflow_dispatch:
     inputs:
       env:
-        type: choice
+        type: environment
         description: Choose env
-        options:
-        - dev
-        - qa
-        - prod
-        - test
+        required: true
+        # options:
+        # - dev
+        # - qa
+        # - prod
+        # - test
 jobs:
   get-tasks:
     name: set tasks (${{ github.event.inputs.env }})
