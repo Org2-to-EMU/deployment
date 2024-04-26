@@ -6,11 +6,7 @@ on:
         type: environment
         description: Choose env
         required: true
-        # options:
-        # - dev
-        # - qa
-        # - prod
-        # - test
+
 jobs:
   get-tasks:
     name: set tasks (${{ github.event.inputs.env }})
