@@ -1,4 +1,4 @@
-name: Deployment
+name: Deployment with matrix for different environments
 on:
   workflow_dispatch:
     inputs:
@@ -9,6 +9,7 @@ on:
         - dev
         - qa
         - prod
+        - test
 jobs:
   get-tasks:
     name: set tasks (${{ github.event.inputs.env }})
