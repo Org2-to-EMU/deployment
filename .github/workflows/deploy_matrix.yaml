@@ -1,10 +1,10 @@
-name: Deployment with matrix for different environments
+name: Deployment 
 on:
   workflow_dispatch:
     inputs:
       env:
         type: environment
-        description: Choose env
+        description: Choose environment
         required: true
 
 jobs:
