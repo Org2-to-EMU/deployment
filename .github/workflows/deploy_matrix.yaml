@@ -1,11 +1,14 @@
-name: Deploy with matrix for different environments
+name: Deployment
 on:
   workflow_dispatch:
     inputs:
       env:
-        type: environment
-        description: 'Environment to deploy to'
-        required: true
+        type: choice
+        description: Choose env
+        options:
+        - dev
+        - qa
+        - prod
 jobs:
   get-tasks:
     name: set tasks (${{ github.event.inputs.env }})
